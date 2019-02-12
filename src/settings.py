@@ -157,4 +157,6 @@ JWT_AUTH = {
     'utils.jwt_handlers.jwt_payload_handler',
     'JWT_GET_USER_SECRET_KEY':
     'utils.jwt_handlers.jwt_get_secret_from_user',
+    'JWT_AUDIENCE': 'developer',
+    'JWT_ISSUER': 'Trisixty-Buys'
 }

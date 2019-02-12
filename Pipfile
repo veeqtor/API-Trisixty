@@ -13,6 +13,8 @@ numpy = "*"
 django = "*"
 djangorestframework = "*"
 djangorestframework-jwt = "*"
+pytest-django = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.7"
