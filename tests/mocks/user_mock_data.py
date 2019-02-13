@@ -1,6 +1,6 @@
 USER = {
     'email': 'test_user@example.com',
-    'password': 'password1234',
+    'password': 'Password@1234',
     'first_name': 'Test',
     'last_name': 'User'
 }

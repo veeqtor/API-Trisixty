@@ -1,21 +1,24 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
-from django.utils import timezone
+from rest_framework_jwt.serializers import JSONWebTokenSerializer
+from rest_framework_jwt.settings import api_settings
+from utils.messages import MESSAGES
+from utils.validations import password_validation
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserSerializer(serializers.ModelSerializer):
     """User serializer"""
 
-    created_at = serializers.DateTimeField(
-        default=serializers.CreateOnlyDefault(timezone.now)
-    )
-
     class Meta:
         model = get_user_model()
-        fields = '__all__'
-        # fields = ['email', 'password',
-        #           'account_type', 'first_name', 'last_name']
-        read_only_fields = ['full_name', 'id', 'date_joined']
+        fields = ['id', 'email', 'password', 'first_name',
+                  'last_name',  'account_type', 'is_staff',
+                  'is_superuser']
+        read_only_fields = ['full_name', 'id', 'account_type',
+                            'date_joined', 'is_staff', 'is_superuser']
         extra_kwargs = {
             'password': {
                 'write_only': True,
@@ -23,9 +26,12 @@ class UserSerializer(serializers.ModelSerializer):
             }
         }
 
+    def validate_password(self, attrs):
+        password_validation(attrs)
+        return attrs
+
     def create(self, validated_data):
         """create a new user"""
-
         return get_user_model().objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
@@ -39,12 +45,27 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class TokenPayloadSerializer(serializers.ModelSerializer):
+class AuthTokenSerializer(JSONWebTokenSerializer):
     """JWT Token Payload serializer"""
 
-    class Meta:
-        model = get_user_model()
-        fields = ('id', 'email', 'last_login', 'date_joined',
-                  'account_type', 'first_name', 'last_name', 'is_staff',
-                  'is_superuser')
-        read_only_fields = ('full_name', 'id', 'date_joined')
+    def validate(self, attrs):
+        """Validate and authenticate the user"""
+        credentials = {
+            'username': attrs.get('email'),
+            'password': attrs.get('password')
+        }
+
+        user = authenticate(
+            request=self.context.get('request'),
+            **credentials
+        )
+        if user:
+            serializer = UserSerializer(user)
+            payload = jwt_payload_handler(serializer.data)
+            return {
+                'token': jwt_encode_handler(payload),
+            }
+
+        else:
+            raise serializers.ValidationError(
+                MESSAGES['UNAUTHENTICATED'], code='authentication')
