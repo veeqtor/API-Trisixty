@@ -1,5 +1,4 @@
 """Module for jwt handling"""
-from user.api.serializers import TokenPayloadSerializer
 from datetime import datetime
 from calendar import timegm
 from rest_framework_jwt.settings import api_settings
@@ -7,23 +6,15 @@ from rest_framework_jwt.settings import api_settings
 
 def jwt_get_secret_from_user(user):
     """Gets the secret key from the user details"""
-
-    user_data = TokenPayloadSerializer(user).data
-    return user_data['id'] + '-' + user_data['email']
-
-
-def jwt_get_email_from_payload_handler(payload):
-    """Gets the email from the payload"""
-    return payload['user_data'].get('email')
+    return user.id + '-' + user.email
 
 
 def jwt_payload_handler(user):
     """JWT payload handler"""
-    user_data = TokenPayloadSerializer(user).data
-    user_data.pop('id')
+    user_id = user.pop('id')
     payload = {
-        'user_id': user.pk,
-        'user_data': user_data,
+        'user_id': user_id,
+        'user_data': user,
         'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA
     }
 
@@ -48,6 +39,7 @@ def jwt_response_payload_handler(token, user=None, request=None):
 
     return {
         'status': 'success',
+        "message": "User successfully logged in",
         'data': {
             'token': token,
         }

@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('id', models.CharField(default='-LYX09o7kxEmY2d5gvSD', max_length=30, primary_key=True, serialize=False, unique=True)),
+                ('id', models.CharField(default='-No-Push-Id', max_length=30, primary_key=True, serialize=False, unique=True)),
                 ('deleted', models.BooleanField(default=False, null=True)),
                 ('email', models.EmailField(max_length=255, unique=True, verbose_name='Email')),
                 ('first_name', models.CharField(blank=True, max_length=255, verbose_name='First Name')),

@@ -8,3 +8,4 @@ omit =
   *wsgi/*,
   manage.py,
   *wsgi.py
+  utils/push_ID.py
