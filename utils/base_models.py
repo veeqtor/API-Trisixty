@@ -19,6 +19,17 @@ class BaseModel(models.Model):
 
     def save(self, force_insert=False, force_update=False,
              using=None, update_fields=None):
+        """
+
+        Args:
+            force_insert:
+            force_update:
+            using:
+            update_fields:
+
+        Returns:
+
+        """
         if self.id == '-No-Push-Id' or self.id is None:
             self.id = PushID().next_id()
         return super(BaseModel, self) \
