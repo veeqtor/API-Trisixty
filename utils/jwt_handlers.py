@@ -1,12 +1,24 @@
 """Module for jwt handling"""
 from datetime import datetime
-from calendar import timegm
 from rest_framework_jwt.settings import api_settings
 
 
-def jwt_get_secret_from_user(user):
-    """Gets the secret key from the user details"""
-    return user.id + '-' + user.email
+# def jwt_get_secret_from_user(user):
+#     """Gets the secret key from the user details"""
+#     return user.id + '-' + user.email
+
+
+def jwt_get_username_from_payload_handler(payload):
+    """Overriding the get user from payload method
+
+    Args:
+        payload {dict}: Jwt payload
+
+    Returns:
+        Str - Email from the payload.
+
+    """
+    return payload['user_data'].get('email')
 
 
 def jwt_payload_handler(user):
@@ -17,13 +29,6 @@ def jwt_payload_handler(user):
         'user_data': user,
         'exp': datetime.utcnow() + api_settings.JWT_EXPIRATION_DELTA
     }
-
-    # Include original issued at time for a brand new token,
-    # to allow token refresh
-    if api_settings.JWT_ALLOW_REFRESH:
-        payload['orig_iat'] = timegm(
-            datetime.utcnow().utctimetuple()
-        )
 
     if api_settings.JWT_AUDIENCE is not None:
         payload['aud'] = api_settings.JWT_AUDIENCE
