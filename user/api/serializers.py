@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['id', 'email', 'password', 'first_name',
                   'last_name',  'account_type', 'is_staff',
-                  'is_superuser', 'verification_token']
+                  'is_superuser']
         read_only_fields = ['full_name', 'id', 'account_type',
                             'date_joined', 'is_staff', 'is_superuser']
         extra_kwargs = {
