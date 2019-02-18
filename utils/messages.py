@@ -1,6 +1,6 @@
 MESSAGES = {
     'DUPLICATES':
-    'duplicate error: {} already exists.',
+    '{} already exists.',
     'CREATED':
     '{} successfully created.',
     'REGISTER':
@@ -24,16 +24,19 @@ MESSAGES = {
     'Password must be alphanumeric and must contain at least one special character.',
     'PROCEED_TO_LOGIN':
     '{}, please proceed to login.',
-    'VERIFIED':
-    'Email already verified',
     'NOT_VERIFIED':
     'You need to verify your account',
     'EXPIRED_TOKEN':
     'Unfortunately, this verification token has expired',
-    'RESEND_EMAIL':
-    'Your verification email have been resent.',
+    'ALREADY_VERIFIED': 'Your account has already been verified.',
+    'VERIFIED': 'You have successfully verified your account.',
+    'RESEND_TOKEN':
+    'You have successfully resent your verification token.',
+    'INVALID_TOKEN': 'Please provide a valid token.',
     'INVALID_EMAIL':
     'You have provided an invalid email',
+    'NOT_FOUND_TOKEN':
+    'Sorry, the token provided is not attached to any user.',
     'RESET_LINK':
     'A reset link have been sent to your email.',
     'RESET_LINK_RESEND':

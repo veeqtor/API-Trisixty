@@ -5,5 +5,8 @@ app_name = 'user'
 
 urlpatterns = [
     path('register/', views.UserRegister.as_view(), name='register'),
-    path('login/', views.LoginUser.as_view(), name='login')
+    path('login/', views.UserLogin.as_view(), name='login'),
+    path('verify/', views.UserAccountVerification.as_view(), name='verify'),
+    path('verify/token/resend/', views.UserVerificationTokenResend.as_view(),
+         name='resend_token')
 ]

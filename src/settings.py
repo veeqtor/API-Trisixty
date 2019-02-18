@@ -138,8 +138,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
@@ -151,10 +151,21 @@ JWT_AUTH = {
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_RESPONSE_PAYLOAD_HANDLER':
     'utils.jwt_handlers.jwt_response_payload_handler',
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER':
+    'utils.jwt_handlers.jwt_get_username_from_payload_handler',
     'JWT_PAYLOAD_HANDLER':
     'utils.jwt_handlers.jwt_payload_handler',
-    'JWT_GET_USER_SECRET_KEY':
-    'utils.jwt_handlers.jwt_get_secret_from_user',
     'JWT_AUDIENCE': 'developer',
     'JWT_ISSUER': 'Trisixty-Buys'
 }
+
+
+# Email configs
+# ====================
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = 'postmaster@sandbox1b552285ba6b49688aac0d7582ec23ff.mailgun.org'
+EMAIL_HOST_PASSWORD = '32afa7bf712597208766566c8d543448-41a2adb4-3218ba84'
+EMAIL_PORT = 587

@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
             object -- User object
         """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError(_('Users must have an email address'))
 
         normalized_email = self.normalize_email(email)
         user = self.model(email=normalized_email, **extra_fields)
@@ -58,6 +58,9 @@ class User(AbstractBaseUser, base_models.BaseModel, PermissionsMixin):
     last_name = models.CharField(_('Last Name'), max_length=255, blank=True)
     is_active = models.BooleanField(_('Is active'), default=True)
     is_staff = models.BooleanField(_('Is staff'), default=False)
+    verification_token = models.CharField(
+        _('verification token'), max_length=100, blank=True, null=True)
+    is_verified = models.BooleanField(_('Is verified'), default=False)
     date_joined = models.DateTimeField(_('Date joined'), default=timezone.now)
     account_type = models.CharField(
         _('Account type'),
