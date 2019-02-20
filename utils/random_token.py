@@ -34,9 +34,13 @@ def is_valid(token):
         Boolean - True or false
 
     """
+    if len(token) < 67:
+        return False
+
     now = datetime.now().timestamp()
     time = token[23:][:20]
     decode_timstamp = binascii.unhexlify(time).decode('ascii')
+
     if now > int(decode_timstamp):
         return False
     else:

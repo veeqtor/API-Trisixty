@@ -22,12 +22,10 @@ MESSAGES = {
     'You have entered an invalid email.',
     'INVALID_PASSWORD':
     'Password must be alphanumeric and must contain at least one special character.',
-    'PROCEED_TO_LOGIN':
-    '{}, please proceed to login.',
     'NOT_VERIFIED':
     'You need to verify your account',
     'EXPIRED_TOKEN':
-    'Unfortunately, this verification token has expired',
+    'Unfortunately, this token has expired or is invalid',
     'ALREADY_VERIFIED': 'Your account has already been verified.',
     'VERIFIED': 'You have successfully verified your account.',
     'RESEND_TOKEN':
@@ -37,10 +35,11 @@ MESSAGES = {
     'You have provided an invalid email',
     'NOT_FOUND_TOKEN':
     'Sorry, the token provided is not attached to any user.',
+    'PASSWORD_RESET': 'A password reset token has been sent to your email.',
+    'PASSWORD_RESET_SUCCESS': 'Your password reset was successful.',
     'RESET_LINK':
     'A reset link have been sent to your email.',
-    'RESET_LINK_RESEND':
-    'Please resend the reset link.'
+    'UNREGISTER_USER': 'Unfortunately, this is not a registered user.'
 }
 
 EXCEPTIONS = {

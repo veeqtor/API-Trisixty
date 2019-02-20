@@ -60,6 +60,8 @@ class User(AbstractBaseUser, base_models.BaseModel, PermissionsMixin):
     is_staff = models.BooleanField(_('Is staff'), default=False)
     verification_token = models.CharField(
         _('verification token'), max_length=100, blank=True, null=True)
+    password_reset = models.CharField(
+        _('Password reset token'), max_length=100, blank=True, null=True)
     is_verified = models.BooleanField(_('Is verified'), default=False)
     date_joined = models.DateTimeField(_('Date joined'), default=timezone.now)
     account_type = models.CharField(
