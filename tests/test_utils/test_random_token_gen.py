@@ -21,3 +21,10 @@ class TestRandomTokenGenerator:
 
         token = generate_verification_token(-2)
         assert is_valid(token) is False
+
+    def test_verify_invalid_token_fails(self):
+        """Test that a token is invalid"""
+
+        token = generate_verification_token(2)[66:]
+
+        assert is_valid(token) is False

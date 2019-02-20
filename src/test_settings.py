@@ -10,3 +10,5 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASS'),
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'

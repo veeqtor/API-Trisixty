@@ -139,3 +139,67 @@ class UserVerificationTokenResend(views.APIView):
             'message': messages.MESSAGES['RESEND_TOKEN']
         }
         return Response(msg, status=status.HTTP_200_OK)
+
+
+class UserPasswordReset(views.APIView):
+    """End point to reset user's password"""
+
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        """Post method to send out password reset email"""
+
+        email = request.data.get('email')
+        user = get_user_model().objects.filter(email=email).first()
+        random_number = random_token.generate_verification_token(10)
+
+        if not user:
+            msg = {
+                'status': 'error',
+                'message': messages.MESSAGES['UNREGISTER_USER']
+            }
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+        user.password_reset = random_number
+        user.save()
+
+        content = f'http://localhost:8000/api/v1/user/password/reset?token={random_number}'
+        send_email('Password Reset', email, content=content)
+
+        msg = {
+            'status': 'success',
+            'message': messages.MESSAGES['PASSWORD_RESET']
+        }
+        return Response(msg, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        """Patch method to reset password"""
+
+        token = request.query_params.get('token')
+        user = get_user_model().objects.filter(password_reset=token).first()
+
+        if token and not random_token.is_valid(token):
+            msg = {
+                'status': 'error',
+                'message': messages.MESSAGES['EXPIRED_TOKEN']
+            }
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+        if user:
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            save_user = serializer.save()
+            save_user.password_reset = None
+            save_user.save()
+
+            msg = {
+                'status': 'success',
+                'message': messages.MESSAGES['PASSWORD_RESET_SUCCESS']
+            }
+            return Response(msg, status=status.HTTP_200_OK)
+
+        msg = {
+            'status': 'error',
+            'message': messages.MESSAGES['NOT_FOUND_TOKEN']
+        }
+        return Response(msg, status=status.HTTP_404_NOT_FOUND)

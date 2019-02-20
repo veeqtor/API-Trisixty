@@ -14,7 +14,7 @@ RESEND_TOKEN = reverse('user:resend_token')
 
 @pytest.mark.django_db
 class TestUserEndpoints:
-    """Class to test out the jwt routes"""
+    """Class to test out the user routes"""
 
     def test_user_url_succeeds(self):
         """Test the JWT authentication paths"""
