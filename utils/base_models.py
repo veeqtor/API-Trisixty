@@ -3,40 +3,16 @@
 from django.db import models
 from django.utils import timezone
 
-from .push_ID import PushID
-
 
 class BaseModel(models.Model):
     """Base model"""
 
-    id = models.CharField(max_length=30, primary_key=True, unique=True,
-                          default='-No-Push-Id')
+    id = models.CharField(max_length=30, primary_key=True, unique=True)
     deleted = models.BooleanField(default=False, null=True)
 
     class Meta:
         """Meta"""
         abstract = True
-
-    def save(self, force_insert=False, force_update=False,
-             using=None, update_fields=None):
-        """
-
-        Args:
-            force_insert:
-            force_update:
-            using:
-            update_fields:
-
-        Returns:
-
-        """
-        if self.id == '-No-Push-Id' or self.id is None:
-            self.id = PushID().next_id()
-        return super(BaseModel, self) \
-            .save(force_insert=force_insert,
-                  force_update=force_update,
-                  using=using,
-                  update_fields=update_fields)
 
 
 class BaseAuditableModel(BaseModel):

@@ -1,3 +1,5 @@
+"""Module for messages"""
+
 MESSAGES = {
     'DUPLICATES':
     '{} already exists.',
@@ -40,12 +42,4 @@ MESSAGES = {
     'RESET_LINK':
     'A reset link have been sent to your email.',
     'UNREGISTER_USER': 'Unfortunately, this is not a registered user.'
-}
-
-EXCEPTIONS = {
-    'EMAIL_ERROR':
-    'An error occurred while trying to send the email.',
-    'CONNECTION_ERROR':
-    'An error occurred while trying '
-    'to connect to the email server.'
 }

@@ -7,5 +7,6 @@ omit =
   *urls.py,
   *wsgi/*,
   manage.py,
-  *wsgi.py
-  utils/push_ID.py
+  *wsgi.py,
+  utils/push_ID.py,
+  redis-stable/*

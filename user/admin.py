@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from . import models
 
 
+@admin.register(models.User)
 class UserAdmin(BaseUserAdmin):
     """custom admin for the user model"""
 
@@ -56,6 +57,3 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-
-
-admin.site.register(models.User, UserAdmin)

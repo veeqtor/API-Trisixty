@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, \
     BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from utils import base_models
 
 
@@ -12,12 +13,13 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         """creates and saves a new user
         Arguments:
-            email {str} -- User email
+            email (str): User email
         Keyword Arguments:
-            password {str} -- User Password (default: {None})
+            password (str): User Password (default: (None))
         Returns:
-            object -- User object
+            Object: User object
         """
+
         if not email:
             raise ValueError(_('Users must have an email address'))
 
@@ -28,19 +30,17 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, **extra_fields):
         """Creates and saves a new superuser
 
         Returns:
-            object -- User object
+            Object: User object
         """
 
-        user = self.create_user(email, password)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
+        extra_fields['is_staff'] = True
+        extra_fields['is_superuser'] = True
 
-        return user
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, base_models.BaseModel, PermissionsMixin):
