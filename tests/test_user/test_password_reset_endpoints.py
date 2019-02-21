@@ -26,10 +26,10 @@ class TestUserPasswordResetEndpoints:
         })
 
         resp = response.data
-        email = mail.outbox[0]
+        email = mail.outbox[1]
 
         assert response.status_code == 200
-        assert len(mail.outbox) == 1
+        assert len(mail.outbox) == 2
         assert email.subject == 'Password Reset'
         assert 'status' in resp
         assert resp['message'] == MESSAGES['PASSWORD_RESET']

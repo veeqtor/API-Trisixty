@@ -1,3 +1,5 @@
+"""API View module for users"""
+
 from .serializers import UserSerializer, AuthTokenSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, views
@@ -6,17 +8,15 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework import status
 from rest_framework.response import Response
 from utils import random_token, messages
-from utils.email_services import EmailConcrete
+from tasks.user_emails import UserSend
 
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
-send_email = EmailConcrete().send_email
-
 
 class UserRegister(generics.CreateAPIView):
-    """Views for listing all users"""
+    """Class representing the view for creating a user"""
 
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
@@ -24,7 +24,7 @@ class UserRegister(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         """Creates a new user
         Args:
-            request:
+            request (object): Request object
             *args:
             **kwargs:
 
@@ -40,10 +40,6 @@ class UserRegister(generics.CreateAPIView):
             headers = self.get_success_headers(serializer.data)
             payload = jwt_payload_handler(serializer.data)
             token = jwt_encode_handler(payload)
-            email = serializer.data['email']
-            content = f'http://localhost:8000/api/v1/user/verify/?token={random_number}'
-            send_email(
-                'Activate Account', email, content=content)
             res = {
                 'status': 'success',
                 'message': messages.MESSAGES['REGISTER'],
@@ -57,13 +53,13 @@ class UserRegister(generics.CreateAPIView):
 
 
 class UserLogin(ObtainJSONWebToken):
-    """Login view"""
+    """Class representing the Login view"""
 
     serializer_class = AuthTokenSerializer
 
 
 class UserAccountVerification(views.APIView):
-    """Endpoint to verify the user account"""
+    """Class representing the endpoint to verify the user account"""
 
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
@@ -72,11 +68,12 @@ class UserAccountVerification(views.APIView):
         """
 
         Args:
-            request:
+            request (object): Request object
             *args:
             **kwargs:
 
         Returns:
+            JSON
 
         """
 
@@ -88,7 +85,7 @@ class UserAccountVerification(views.APIView):
                 'message': messages.MESSAGES['INVALID_TOKEN']
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        found_token = self.queryset.filter(verification_token=token)
+        found_token = self.queryset.filter(verification_token=token).first()
 
         if not found_token:
             return Response({
@@ -96,8 +93,10 @@ class UserAccountVerification(views.APIView):
                 'message': messages.MESSAGES['NOT_FOUND_TOKEN']
             }, status=status.HTTP_404_NOT_FOUND)
 
-        if random_token.is_valid(token):
-            found_token.update(verification_token=None, is_verified=True)
+        if not found_token.is_verified and random_token.is_valid(token):
+            found_token.verification_token = None
+            found_token.is_verified = True
+            found_token.save()
             msg = {
                 'status': 'success',
                 'message': messages.MESSAGES['VERIFIED']
@@ -112,7 +111,8 @@ class UserAccountVerification(views.APIView):
 
 
 class UserVerificationTokenResend(views.APIView):
-    """Endpoint to resend the account verification token"""
+    """Class representing the endpoint to
+    resend the account verification token"""
 
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -131,9 +131,7 @@ class UserVerificationTokenResend(views.APIView):
             return Response(msg, status=status.HTTP_403_FORBIDDEN)
         user.verification_token = random_number
         user.save()
-        content = f'http://localhost:8000/api/v1/user/verify/?token={random_number}'
-        send_email(
-            'Resend Verification Token', request.user.email, content=content)
+        UserSend.verification_email(user.id)
         msg = {
             'status': 'success',
             'message': messages.MESSAGES['RESEND_TOKEN']
@@ -142,7 +140,7 @@ class UserVerificationTokenResend(views.APIView):
 
 
 class UserPasswordReset(views.APIView):
-    """End point to reset user's password"""
+    """Class representing the endpoints for user's password reset"""
 
     serializer_class = UserSerializer
 
@@ -162,10 +160,7 @@ class UserPasswordReset(views.APIView):
 
         user.password_reset = random_number
         user.save()
-
-        content = f'http://localhost:8000/api/v1/user/password/reset?token={random_number}'
-        send_email('Password Reset', email, content=content)
-
+        UserSend.password_reset_email(user.id)
         msg = {
             'status': 'success',
             'message': messages.MESSAGES['PASSWORD_RESET']

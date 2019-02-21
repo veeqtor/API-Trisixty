@@ -2,7 +2,7 @@ default: &defaults
   docker:
     # specify the version you desire here
     # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-    - image: circleci/python:3.7.0
+    - image: circleci/python:3.6.5
       environment:
         PROJECT_PATH: /home/circleci/trisixty-api
         CC_TEST_REPORTER_ID: ${CC_TEST_REPORTER_ID}
@@ -37,8 +37,8 @@ cmd_install_dependencies: &cmd_install_dependencies
       export PATH="/home/circleci/.pyenv/bin:$PATH"
       eval "$(pyenv init -)"
       eval "$(pyenv virtualenv-init -)"
-      pyenv install 3.7.0 -s
-      pyenv local 3.7.0
+      pyenv install 3.6.5 -s
+      pyenv local 3.6.5
       pip3 install --user pipenv==2018.11.26
       python3 -m pip install pipenv==2018.11.26
       python3 -m pipenv install

@@ -3,19 +3,14 @@ from datetime import datetime
 from rest_framework_jwt.settings import api_settings
 
 
-# def jwt_get_secret_from_user(user):
-#     """Gets the secret key from the user details"""
-#     return user.id + '-' + user.email
-
-
 def jwt_get_username_from_payload_handler(payload):
     """Overriding the get user from payload method
 
     Args:
-        payload {dict}: Jwt payload
+        payload (dict): Jwt payload
 
     Returns:
-        Str - Email from the payload.
+        String: Email from the payload.
 
     """
     return payload['user_data'].get('email')
@@ -23,6 +18,7 @@ def jwt_get_username_from_payload_handler(payload):
 
 def jwt_payload_handler(user):
     """JWT payload handler"""
+
     user_id = user.pop('id')
     payload = {
         'user_id': user_id,

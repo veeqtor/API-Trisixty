@@ -10,7 +10,7 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """User serializer"""
+    """Class representing the User serializer"""
 
     class Meta:
         """Meta class"""
@@ -54,10 +54,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AuthTokenSerializer(JSONWebTokenSerializer):
-    """JWT Token Payload serializer"""
+    """Class representing the JWT Token Payload serializer"""
 
     def validate(self, attrs):
         """Validate and authenticate the user"""
+
         credentials = {
             'username': attrs.get('email'),
             'password': attrs.get('password')
