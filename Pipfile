@@ -17,6 +17,8 @@ pytest-django = "*"
 pytest-cov = "*"
 celery = "*"
 redis = "*"
+coreapi = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.6.5"

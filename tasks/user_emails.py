@@ -24,7 +24,10 @@ class UserSend:
         subject = 'Verification Link'
         found_user = cls.find_user(user_id)
         template = get_template('verification_email.html')
-        ctx = {'token': found_user.verification_token}
+        ctx = {
+            'token': found_user.verification_token,
+            'full_name': found_user.full_name
+        }
         html_content = template.render(ctx)
 
         send.delay(subject, found_user.email, html_content)
@@ -44,7 +47,10 @@ class UserSend:
         subject = 'Password Reset'
         found_user = cls.find_user(user_id)
         template = get_template('password_reset.html')
-        ctx = {'token': found_user.password_reset}
+        ctx = {
+            'token': found_user.password_reset,
+            'full_name': found_user.full_name
+        }
         html_content = template.render(ctx)
 
         send.delay(subject, found_user.email, html_content)
