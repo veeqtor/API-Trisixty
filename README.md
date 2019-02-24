@@ -22,10 +22,10 @@ The API documentation can be found here:
 
 # Table of Contents
 
-- [Getting Started](#Getting Started)
+- [Getting Started](#getting-started)
 - [Technologies](#technologies)
-- [Installation and Usage](#Setting up for development)
-- [Testing](#Running tests and generating report)
+- [Installation and Usage](#Setting-up-for-development)
+- [Testing](#Running-tests-and-generating-report)
 - [License](#license)
 
 ## Getting Started
