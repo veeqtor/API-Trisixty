@@ -11,7 +11,7 @@
 The **Trixbuy-api** is the backbone of an e-commerce platform for buying and selling of homemade wears in Nigeria.
 The API documentation can be found here: 
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.getpostman.com/collections/)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ec2e3eb971309499cf94)
 
 
 ## Key Application features
