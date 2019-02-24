@@ -16,7 +16,7 @@ The API documentation can be found here:
 
 ## Key Application features
 
-1. Buys wears.
+1. Register and buy wears.
 2. Be a vendor and sell wears.
 
 
