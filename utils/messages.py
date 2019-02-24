@@ -36,7 +36,7 @@ MESSAGES = {
     'INVALID_EMAIL':
     'You have provided an invalid email',
     'NOT_FOUND_TOKEN':
-    'Sorry, the token provided is not attached to any user.',
+    'Sorry, the token provided is not attached to any user or is invalid.',
     'PASSWORD_RESET': 'A password reset token has been sent to your email.',
     'PASSWORD_RESET_SUCCESS': 'Your password reset was successful.',
     'RESET_LINK':
