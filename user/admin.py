@@ -11,6 +11,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email', 'full_name', 'date_joined', 'is_staff',
                     'is_superuser']
+    list_per_page = 25
 
     fieldsets = (
         (None, {

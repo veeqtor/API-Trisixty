@@ -3,7 +3,11 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+
+from vendor.models import Vendor
+
 from tests.mocks.user_mock_data import USER
+from tests.mocks.vendor_mock_data import NEW_VENDOR
 
 
 REGISTER_URL = reverse('user:register')
@@ -18,6 +22,14 @@ def create_user():
     def user(data):
         return get_user_model().objects.create_user(**data)
     return user
+
+
+@pytest.fixture(scope='function')
+def create_vendor(create_user):
+    """Fixture to create a user"""
+    user = create_user(USER)
+    NEW_VENDOR['owner'] = user
+    return Vendor.objects.create(**NEW_VENDOR)
 
 
 @pytest.fixture(scope='function')

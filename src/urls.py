@@ -5,6 +5,8 @@ from django.urls import path, include
 from user.views import home
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
+from django.conf import settings
+from django.conf.urls.static import static
 
 BASE_VERSION = 'api/v1/'
 
@@ -21,4 +23,5 @@ urlpatterns = [
                                     description='An API enable user to '
                                     'register, buy and sell clothes.')),
     path(f'{BASE_VERSION}user/', include('user.api.urls')),
-]
+    path(f'{BASE_VERSION}vendor/', include('vendor.api.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
