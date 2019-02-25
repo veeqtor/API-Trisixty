@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from utils import base_models
+from utils.push_ID import PushID
 
 
 class UserManager(BaseUserManager):
@@ -23,6 +24,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError(_('Users must have an email address'))
 
+        extra_fields['id'] = PushID().next_id()
         normalized_email = self.normalize_email(email)
         user = self.model(email=normalized_email, **extra_fields)
         user.set_password(password)
