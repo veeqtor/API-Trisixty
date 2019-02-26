@@ -9,15 +9,17 @@ class UserAdmin(BaseUserAdmin):
     """custom admin for the user model"""
 
     ordering = ['id']
-    list_display = ['email', 'full_name', 'date_joined', 'is_staff',
-                    'is_superuser']
+    list_display = ['email', 'full_name', 'account_type', 'is_verified',
+                    'date_joined', 'is_staff', 'is_superuser']
     list_per_page = 25
 
     fieldsets = (
         (None, {
             'fields': (
                 'email',
-                'password'
+                'password',
+                'account_type',
+                'is_verified'
             )
         }),
         (
@@ -36,8 +38,8 @@ class UserAdmin(BaseUserAdmin):
                     'is_active',
                     'is_staff',
                     'is_superuser',
-                    'groups',
-                    'user_permissions'
+                    # 'groups',
+                    # 'user_permissions'
                 )
             }
         ),

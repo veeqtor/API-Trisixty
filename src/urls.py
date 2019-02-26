@@ -23,5 +23,5 @@ urlpatterns = [
                                     description='An API enable user to '
                                     'register, buy and sell clothes.')),
     path(f'{BASE_VERSION}user/', include('user.api.urls')),
-    path(f'{BASE_VERSION}vendor/', include('vendor.api.urls')),
+    path(f'{BASE_VERSION}', include('vendor.api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

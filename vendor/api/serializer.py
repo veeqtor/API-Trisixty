@@ -22,7 +22,7 @@ class VendorSerializer(serializers.ModelSerializer):
             'email',
             'phone'
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'owner']
         extra_kwargs = {
             "owner": {
                 "error_messages": {
