@@ -12,7 +12,7 @@ class TestVendorModel:
     def test_vendor_creation_success(self, create_user, create_vendor):
         """Test that vendors can be created"""
 
-        vendor = create_vendor
+        vendor, _ = create_vendor
 
         assert vendor.name == NEW_VENDOR['name']
         assert vendor.description == NEW_VENDOR['description']
@@ -23,14 +23,14 @@ class TestVendorModel:
     def test_the_model_string_succeeds(self, create_user, create_vendor):
         """Test that vendors model string rep is correct."""
 
-        vendor = create_vendor
+        vendor, _ = create_vendor
 
         assert vendor.__str__() == NEW_VENDOR['name']
 
     def test_model_soft_delete_succeeds(self, create_user, create_vendor):
         """Test the soft delete"""
 
-        vendor = create_vendor
+        vendor, _ = create_vendor
 
         vendor.delete()
         assert vendor.deleted is True
@@ -38,7 +38,7 @@ class TestVendorModel:
     def test_hard_delete(self, create_user, create_vendor):
         """Test for hard delete"""
 
-        vendor = create_vendor
+        vendor, _ = create_vendor
 
         vendor.hard_delete()
         assert vendor.id is None

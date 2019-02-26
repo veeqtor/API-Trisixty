@@ -29,7 +29,7 @@ def create_vendor(create_user):
     """Fixture to create a user"""
     user = create_user(USER)
     NEW_VENDOR['owner'] = user
-    return Vendor.objects.create(**NEW_VENDOR)
+    return Vendor.objects.create(**NEW_VENDOR), user
 
 
 @pytest.fixture(scope='function')
@@ -81,3 +81,13 @@ def auth_header(client, generate_token):
     return {
         'HTTP_AUTHORIZATION': f'Bearer {token}'
     }
+
+@pytest.fixture(scope='function')
+def authenticate_user(client):
+    def token(user):
+        response = client.post(LOGIN_URL, data={
+            'email': user['email'],
+            'password': user['password']
+        }).data
+        return response['data']['token']
+    return token
