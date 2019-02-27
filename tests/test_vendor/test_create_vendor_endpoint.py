@@ -1,11 +1,12 @@
 """Test module for the create endpoint"""
 
 import pytest
+from django.urls import reverse
 from tests.mocks.user_mock_data import NEW_USER, USER
 from tests.mocks.vendor_mock_data import NEW_VENDOR
 from utils.messages import MESSAGES
 
-VENDOR_URL = '/api/v1/vendor/'
+VENDOR_URL = reverse('vendor:vendor-list')
 
 
 @pytest.mark.django_db
@@ -49,9 +50,7 @@ class TestCreateVendorEndpoint:
         assert resp['status'] == 'success'
         assert resp['message'] == MESSAGES['CREATED'].format('Vendor')
 
-    def test_create_already_exiting_vendor_fails(self,
-                                                 client,
-                                                 create_vendor,
+    def test_create_already_exiting_vendor_fails(self, client, create_vendor,
                                                  authenticate_user):
         vendor, user = create_vendor
         auth_header = self.authenticate_user(authenticate_user, USER)
