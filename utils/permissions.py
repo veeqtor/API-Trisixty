@@ -14,7 +14,8 @@ class VerifiedBusinessAccountPermission(BasePermission):
 
         user = request.user
 
-        return bool(user.is_verified and user.account_type == 'BUSINESS')
+        return bool(user.is_superuser or
+                    (user.is_verified and user.account_type == 'BUSINESS'))
 
 
 class IsAuthenticated(BasePermission):
@@ -26,5 +27,3 @@ class IsAuthenticated(BasePermission):
         """Checks for the permission"""
 
         return bool(request.user and request.user.is_authenticated)
-
-

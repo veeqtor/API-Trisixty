@@ -18,7 +18,7 @@ class Vendor(BaseAuditableModel):
 
     class Meta:
         """Meta"""
-
+        ordering = ('-created_at',)
         db_table = 'vendors'
 
     def __str__(self):

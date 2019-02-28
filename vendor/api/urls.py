@@ -1,9 +1,15 @@
 """Module for the vendor urls"""
+from django.urls import path, include
 
-from vendor.api.views import VendorView
+from vendor.api import views
 from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'vendor', VendorView, basename='vendor')
-urlpatterns = router.urls
+router.register(r'', views.VendorViewSet)
+
+app_name = 'vendor'
+
+urlpatterns = [
+    path('vendor/', include(router.urls))
+]

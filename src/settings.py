@@ -13,10 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import datetime
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -28,7 +26,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -75,13 +72,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'src.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': os.environ.get('DB_HOST'),
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
@@ -107,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -121,15 +116,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Custom user model
 AUTH_USER_MODEL = 'user.user'
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'src/static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'templates/static')
@@ -139,18 +132,55 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        "console": {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+            'formatter': 'standard'
+        },
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': './error.log',
+            'formatter': 'standard'
+        }
+    },
+    'loggers': {
+        'GHA': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}
 
 # REST FRAMEWORK CONFIGS
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.IsAuthenticated',
     ),
+    'EXCEPTION_HANDLER':
+        'utils.custom_exception_handler.custom_exception_handler',
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
 }
 
 # JWT CONFIGS
@@ -159,15 +189,14 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_RESPONSE_PAYLOAD_HANDLER':
-    'utils.jwt_handlers.jwt_response_payload_handler',
+        'utils.jwt_handlers.jwt_response_payload_handler',
     'JWT_PAYLOAD_GET_USERNAME_HANDLER':
-    'utils.jwt_handlers.jwt_get_username_from_payload_handler',
+        'utils.jwt_handlers.jwt_get_username_from_payload_handler',
     'JWT_PAYLOAD_HANDLER':
-    'utils.jwt_handlers.jwt_payload_handler',
+        'utils.jwt_handlers.jwt_payload_handler',
     'JWT_AUDIENCE': 'developer',
     'JWT_ISSUER': 'Trisixty-Buys'
 }
-
 
 # Email configs
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -175,7 +204,6 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
-
 
 # REDIS related settings
 REDIS_HOST = os.environ.get('REDIS_HOST')

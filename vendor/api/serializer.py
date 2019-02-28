@@ -3,6 +3,7 @@
 from rest_framework import serializers
 
 from vendor.models import Vendor
+from user.api.serializers import DetailedUserSerializer
 
 
 class VendorSerializer(serializers.ModelSerializer):
@@ -31,3 +32,9 @@ class VendorSerializer(serializers.ModelSerializer):
                 }
             }
         }
+
+
+class VendorDetailsSerializer(VendorSerializer):
+    """Serializer for a single vendor"""
+
+    owner = DetailedUserSerializer()

@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         model = get_user_model()
         fields = ['id', 'email', 'password', 'first_name',
-                  'last_name',  'account_type', 'is_staff',
+                  'last_name', 'account_type', 'is_staff',
                   'is_superuser']
         read_only_fields = ['full_name', 'id', 'account_type',
                             'date_joined', 'is_staff', 'is_superuser']
@@ -65,8 +65,8 @@ class AuthTokenSerializer(JSONWebTokenSerializer):
         }
 
         user = authenticate(
-            request=self.context.get('request'),
-            **credentials
+                request=self.context.get('request'),
+                **credentials
         )
         if user:
             serializer = UserSerializer(user)
@@ -77,4 +77,15 @@ class AuthTokenSerializer(JSONWebTokenSerializer):
 
         else:
             raise serializers.ValidationError(
-                MESSAGES['UNAUTHENTICATED'], code='authentication')
+                    MESSAGES['UNAUTHENTICATED'], code='authentication')
+
+
+class DetailedUserSerializer(UserSerializer):
+    """Serializer for the viewing user details"""
+
+    class Meta(UserSerializer.Meta):
+        """Meta data"""
+
+        fields = ['id', 'email', 'first_name', 'last_name', 'full_name']
+        read_only_fields = ['id', 'email', 'first_name',
+                            'last_name', 'full_name']
