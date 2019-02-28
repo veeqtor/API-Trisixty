@@ -7,6 +7,8 @@ MESSAGES = {
     },
     'FETCHED':
         '{} successfully fetched.',
+    'UPDATED':
+        '{} successfully updated.',
     'DUPLICATES':
         '{} with this {} already exists.',
     'CREATED':

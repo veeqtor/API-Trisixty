@@ -12,9 +12,10 @@ from utils.permissions import (VerifiedBusinessAccountPermission,
 
 
 class VendorViewSet(viewsets.GenericViewSet,
-                 mixins.ListModelMixin,
-                 mixins.CreateModelMixin,
-                 mixins.RetrieveModelMixin):
+                    mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.RetrieveModelMixin):
     """A viewset for viewing and editing vendor instances."""
 
     queryset = Vendor.objects.all()
@@ -55,11 +56,13 @@ class VendorViewSet(viewsets.GenericViewSet,
 
         except Exception as e:
 
-            return Response({
+            response = {
                 "status": 'success',
                 "message": 'The page requested is not valid.',
                 "data": []
-            })
+            }
+
+            return Response(response)
 
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -81,7 +84,6 @@ class VendorViewSet(viewsets.GenericViewSet,
 
         instance = self.get_object()
         serializer = self.get_serializer_class()
-
         serialized_data = serializer(instance).data
 
         response = {
@@ -92,6 +94,30 @@ class VendorViewSet(viewsets.GenericViewSet,
 
         return Response(response)
 
+    def partial_update(self, request, *args, **kwargs):
+        """View to update vendors"""
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data,
+                                         partial=True)
+        if serializer.is_valid():
+            serializer.validated_data['updated_by'] = request.user.full_name
+            self.perform_update(serializer)
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['UPDATED'].format('Vendor'),
+                "data": serializer.data
+            }
+            return Response(response)
+
+        msg = {
+            'status': 'error',
+            'errors': serializer.errors,
+        }
+
+        return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
         """queryset to get all vendors for authenticated users and owners"""
 
@@ -99,7 +125,6 @@ class VendorViewSet(viewsets.GenericViewSet,
         user = self.request.user
         is_business_account = bool(user.__dict__ and
                                    user.account_type == 'BUSINESS')
-
         if is_business_account:
             queryset = queryset.filter(owner=self.request.user)
 
@@ -110,7 +135,7 @@ class VendorViewSet(viewsets.GenericViewSet,
     def get_serializer_class(self):
         """Custom serializer"""
 
-        if self.action == 'retrieve':
+        if self.action in ('retrieve', 'partial_update'):
             return VendorDetailsSerializer
 
         return super(self.__class__, self).get_serializer_class()
