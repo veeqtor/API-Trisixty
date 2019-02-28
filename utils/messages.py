@@ -5,6 +5,8 @@ MESSAGES = {
         'status': 'error',
         'errors': 'You don\'t have permission to perform this action.'
     },
+    'FETCHED':
+        '{} successfully fetched.',
     'DUPLICATES':
         '{} with this {} already exists.',
     'CREATED':
