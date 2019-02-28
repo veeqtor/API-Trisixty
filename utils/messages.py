@@ -25,7 +25,7 @@ MESSAGES = {
         'This field is required.',
     'BLANK_FIELD': 'This field may not be blank.',
     'NOT_FOUND':
-        'Oops!, Sorry we could not find you on our system.',
+        'Oops!, Sorry we could not find what you are looking for.',
     'EMAIL_FORMAT':
         'You have entered an invalid email.',
     'INVALID_PASSWORD':

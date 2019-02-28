@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'', views.VendorView)
+router.register(r'', views.VendorViewSet)
 
 app_name = 'vendor'
 
