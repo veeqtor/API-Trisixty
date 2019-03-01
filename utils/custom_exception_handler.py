@@ -13,16 +13,10 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     # Now add the HTTP status code to the response.
-    if response.status_code == status.HTTP_404_NOT_FOUND:
+    if response and response.status_code == status.HTTP_404_NOT_FOUND:
         response.data = {
             'status': 'error',
             'message': MESSAGES['NOT_FOUND']
-        }
-
-    if response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
-        response.data = {
-            'status': 'error',
-            'message': MESSAGES['ERROR']
         }
 
     return response
