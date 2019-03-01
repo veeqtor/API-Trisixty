@@ -2,6 +2,8 @@
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
+
 
 from vendor.api.serializer import VendorSerializer, VendorDetailsSerializer
 from vendor.models import Vendor
@@ -15,10 +17,11 @@ class VendorViewSet(viewsets.GenericViewSet,
                     mixins.ListModelMixin,
                     mixins.CreateModelMixin,
                     mixins.UpdateModelMixin,
-                    mixins.RetrieveModelMixin):
-    """A viewset for viewing and editing vendor instances."""
+                    mixins.RetrieveModelMixin,
+                    mixins.DestroyModelMixin):
+    """A viewSet for viewing and editing vendor instances."""
 
-    queryset = Vendor.objects.all()
+    queryset = Vendor.objects.all().filter(deleted=False)
     serializer_class = VendorSerializer
     permission_classes = (IsAuthenticated,
                           VerifiedBusinessAccountPermission)
@@ -117,6 +120,73 @@ class VendorViewSet(viewsets.GenericViewSet,
         }
 
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        """Method to delete vendors"""
+
+        instance = self.get_object()
+        self.perform_destroy(instance)
+
+        response = {
+            "status": 'success',
+            "message": MESSAGES['DELETED'].format('Vendor'),
+        }
+        return Response(response)
+
+    @action(methods=['get'], detail=True, url_path='restore')
+    def restore(self, request, pk=None):
+        """Restoring a deleted vendor"""
+
+        instance = Vendor.objects.filter(pk=pk).first()
+        if instance:
+            self.check_object_permissions(request, instance)
+            instance.deleted = False
+            instance.save()
+
+            serializer = self.get_serializer_class()
+            serialized_data = serializer(instance).data
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['RESTORE'].format('Vendor',
+                                                      serialized_data['name']),
+                "data": serialized_data
+            }
+            return Response(response)
+
+        error = {
+            "status": "error",
+            "message": MESSAGES['NOT_FOUND']
+        }
+
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+    @action(methods=['delete'], detail=True, url_path='delete')
+    def hard_delete(self, request, pk=None):
+        """Restoring a deleted vendor"""
+
+        instance = Vendor.objects.filter(pk=pk).first()
+        if instance:
+            self.check_object_permissions(request, instance)
+            self.perform_hard_delete(instance)
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['P_DELETED'].format('Vendor'),
+            }
+            return Response(response)
+
+        error = {
+            "status": "error",
+            "message": MESSAGES['NOT_FOUND']
+        }
+
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+    def perform_hard_delete(self, instance):
+        """Performs hard delete"""
+
+        instance.hard_delete()
 
     def get_queryset(self):
         """queryset to get all vendors for authenticated users and owners"""
