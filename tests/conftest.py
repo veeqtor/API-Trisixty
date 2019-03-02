@@ -5,9 +5,11 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from vendor.models import Vendor
+from product.models import Product
 
 from tests.mocks.user_mock_data import USER, NEW_USER
 from tests.mocks.vendor_mock_data import NEW_VENDOR
+from tests.mocks.product_mock_data import NEW_PRODUCT
 
 REGISTER_URL = reverse('user:register')
 LOGIN_URL = reverse('user:login')
@@ -24,6 +26,7 @@ def create_user():
 
     return user
 
+
 @pytest.fixture(scope='function')
 def verified_business_user():
     """Fixture to create a user"""
@@ -34,9 +37,18 @@ def verified_business_user():
         user.account_type = 'BUSINESS'
         user.save()
         return user
+
     return verified_user
 
 
+@pytest.fixture(scope='function')
+def create_product(create_vendor):
+    """Fixture to create a new vendor"""
+
+    vendor, user = create_vendor
+
+    NEW_PRODUCT['vendor'] = vendor
+    return Product.objects.create(**NEW_PRODUCT), user
 
 
 @pytest.fixture(scope='function')
@@ -131,7 +143,7 @@ def new_vendors(verified_business_user):
             "email": "new_vendor@example.com",
             "phone": "07068662986"
 
-        },   {
+        }, {
 
             "name": "BusinessI",
             "location": "Unknown Location",
@@ -141,7 +153,7 @@ def new_vendors(verified_business_user):
             "email": "new_vendorI@example.com",
             "phone": "07068662986"
 
-        },   {
+        }, {
 
             "name": "BusinessII",
             "location": "Unknown Location",
@@ -151,7 +163,7 @@ def new_vendors(verified_business_user):
             "email": "new_vendorII@example.com",
             "phone": "07068662986"
 
-        },   {
+        }, {
 
             "name": "BusinessIII",
             "location": "Unknown Location",
