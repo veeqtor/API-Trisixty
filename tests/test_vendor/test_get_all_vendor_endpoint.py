@@ -70,3 +70,18 @@ class TestGetAllVendorEndpoint:
 
         assert response.status_code == 403
         assert resp == MESSAGES['NO_PERMISSION']
+
+    def test_get_all_vendors_after_soft_delete(self, client,
+                                               authenticate_user, new_vendors):
+        vendors = new_vendors
+        vendors[0].deleted = True
+        vendors[0].save()
+        auth_header = self.authenticate_user(authenticate_user, NEW_USER)
+        response = client.get(VENDOR_URL, **auth_header)
+        resp = response.data
+        data = resp['data']
+
+        assert response.status_code == 200
+        assert len(data) == 3
+        assert resp['meta']['count'] == 3
+        assert data[0]['name'] == vendors[-1].name

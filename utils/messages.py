@@ -7,6 +7,12 @@ MESSAGES = {
     },
     'FETCHED':
         '{} successfully fetched.',
+    'DELETED':
+        '{} successfully deleted.',
+    'P_DELETED':
+        '{} permanently deleted.',
+    'RESTORE':
+        '{} with name: "{}" successfully restored.',
     'UPDATED':
         '{} successfully updated.',
     'DUPLICATES':
