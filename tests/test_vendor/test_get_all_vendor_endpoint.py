@@ -55,9 +55,9 @@ class TestGetAllVendorEndpoint:
         resp = response.data
         data = resp['data']
 
-        assert response.status_code == 200
+        assert response.status_code == 404
         assert data == []
-        assert resp['message'] == 'The page requested is not valid.'
+        assert resp['message'] == MESSAGES['INVALID_PAGE']
 
     def test_get_all_vendors_fails(self, client, create_user, authenticate_user,
                                    new_vendors):

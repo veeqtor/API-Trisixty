@@ -58,14 +58,13 @@ class VendorViewSet(viewsets.GenericViewSet,
             page = self.paginate_queryset(queryset)
 
         except Exception as e:
-
             response = {
-                "status": 'success',
-                "message": 'The page requested is not valid.',
+                "status": 'error',
+                "message": MESSAGES['INVALID_PAGE'],
                 "data": []
             }
 
-            return Response(response)
+            return Response(response, status.HTTP_404_NOT_FOUND)
 
         if page is not None:
             serializer = self.get_serializer(page, many=True)

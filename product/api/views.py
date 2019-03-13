@@ -15,13 +15,60 @@ from utils.messages import MESSAGES
 class ProductViewSet(viewsets.GenericViewSet,
                      mixins.CreateModelMixin,
                      mixins.ListModelMixin,
-                     mixins.UpdateModelMixin):
+                     mixins.UpdateModelMixin,
+                     mixins.RetrieveModelMixin):
     """ViewSet for the products"""
 
     queryset = Product.objects.filter(deleted=False).all()
     serializer_class = ProductSerializer
 
     permission_classes = (IsAuthenticated, VerifiedBusinessAccountPermission)
+
+    def list(self, request, *args, **kwargs):
+        """Method to view all products"""
+
+        queryset = self.get_queryset()
+
+        try:
+            page = self.paginate_queryset(queryset)
+
+        except Exception as e:
+            response = {
+                "status": 'error',
+                "message": MESSAGES['INVALID_PAGE'],
+                "data": []
+            }
+
+            return Response(response, status.HTTP_404_NOT_FOUND)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            paginated_response = self.get_paginated_response(serializer.data)
+            results = paginated_response.data.pop('results')
+            meta = paginated_response.data
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['FETCHED'].format('Products'),
+                "meta": meta,
+                "data": results
+            }
+
+            return Response(response)
+
+    def retrieve(self, request, *args, **kwargs):
+        """Method to retrieve all product"""
+        instance = self.get_object()
+        serializer = self.get_serializer_class()
+        serialized_data = serializer(instance).data
+
+        response = {
+            "status": 'success',
+            "message": MESSAGES['FETCHED'].format('Product'),
+            "data": serialized_data
+        }
+
+        return Response(response)
 
     def create(self, request, *args, **kwargs):
         """Method to create a product"""
@@ -89,3 +136,13 @@ class ProductViewSet(viewsets.GenericViewSet,
         }
 
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+    # Overriding the get get_permissions method  so as to use
+    # a different serializer for the list and retrieve end point
+    def get_permissions(self):
+        """Custom permissions for the list view"""
+
+        if self.action in ('list', 'retrieve'):
+            self.permission_classes = []
+
+        return super(self.__class__, self).get_permissions()
