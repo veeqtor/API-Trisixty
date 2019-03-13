@@ -5,6 +5,8 @@ from rest_framework import serializers
 from vendor.models import Vendor
 from user.api.serializers import DetailedUserSerializer
 
+from utils.constants import READ_ONLY_FIELDS
+
 
 class VendorSerializer(serializers.ModelSerializer):
     """Class representing the vendor serializer"""
@@ -21,9 +23,11 @@ class VendorSerializer(serializers.ModelSerializer):
             'owner',
             'logo_url',
             'email',
-            'phone'
+            'phone',
+            'created_at',
+            'updated_at'
         ]
-        read_only_fields = ['id', 'owner']
+        read_only_fields = READ_ONLY_FIELDS + ['owner']
         extra_kwargs = {
             "owner": {
                 "error_messages": {

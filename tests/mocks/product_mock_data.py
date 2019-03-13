@@ -9,7 +9,7 @@ NEW_PRODUCT = {
 }
 
 NEW_PRODUCT_II = {
-    "title": "Business",
+    "title": "Business updated",
     "price": 23.23,
     "description": "New description",
     "images": ["https://place-hold.it/300x500/fff",

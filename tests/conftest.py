@@ -176,3 +176,55 @@ def new_vendors(verified_business_user):
     ]
 
     return [Vendor.objects.create(**d) for d in data]
+
+
+@pytest.fixture(scope='function')
+def new_products(new_vendors):
+    """To create products"""
+
+    vendor = new_vendors
+
+    data = [
+        {
+            "title": "Leggings I",
+            "price": 23.23,
+            "description": "New description",
+            "images": ["https://place-hold.it/300x500/fff",
+                       "https://place-hold.it/300x500/fff"],
+            "vendor": vendor[0]
+        }, {
+
+            "title": "Trouser II",
+            "price": 23.23,
+            "description": "New description",
+            "images": ["https://place-hold.it/300x500/fff",
+                       "https://place-hold.it/300x500/fff"],
+            "vendor": vendor[1]
+        }, {
+
+            "title": "Short III",
+            "price": 23.23,
+            "description": "New description",
+            "images": ["https://place-hold.it/300x500/fff",
+                       "https://place-hold.it/300x500/fff"],
+            "vendor": vendor[2]
+        }, {
+
+            "title": "Gown IV",
+            "price": 23.23,
+            "description": "New description",
+            "images": ["https://place-hold.it/300x500/fff",
+                       "https://place-hold.it/300x500/fff"],
+            "vendor": vendor[3]
+        }, {
+
+            "title": "Shirt V",
+            "price": 23.23,
+            "description": "New description",
+            "images": ["https://place-hold.it/300x500/fff",
+                       "https://place-hold.it/300x500/fff"],
+            "vendor": vendor[0]
+        }
+    ]
+
+    return [Product.objects.create(**d) for d in data]

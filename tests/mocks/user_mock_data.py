@@ -12,6 +12,13 @@ NEW_USER = {
     'last_name': 'User'
 }
 
+NEW_USER_II = {
+    'email': 'new_test_user_II@example.com',
+    'password': 'Password@1234',
+    'first_name': 'New TestII',
+    'last_name': 'UserII'
+}
+
 USER_INVALID = {
     'email': '',
     'password': 'password1234',
