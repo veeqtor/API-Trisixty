@@ -135,4 +135,4 @@ class TestEditAProductEndpoint:
         assert response.status_code == 400
         assert resp['status'] == 'error'
         assert resp['errors']['title'][0] == MESSAGES['DUPLICATES'] \
-            .format('product', 'Product name')
+            .format('Product', 'product title')

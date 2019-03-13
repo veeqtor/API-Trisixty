@@ -5,6 +5,8 @@ MESSAGES = {
         'status': 'error',
         'errors': 'You don\'t have permission to perform this action.'
     },
+    'NOT_DELETED':
+        'Record was not deleted,therefore it cannot be restored.',
     'INVALID_PAGE':
         'The page requested is not valid.',
     'FETCHED':

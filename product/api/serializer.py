@@ -1,8 +1,10 @@
 """Module for the product serializer"""
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from product.models import Product
+from utils.messages import MESSAGES
 from vendor.api.serializer import VendorDetailsSerializer
 
 from utils.constants import READ_ONLY_FIELDS
@@ -12,6 +14,11 @@ class ProductSerializer(serializers.ModelSerializer):
     """Class representing the vendor serializer"""
 
     vendor_detail = VendorDetailsSerializer(source='vendor', read_only=True)
+    title = serializers.CharField(max_length=255, validators=[
+        UniqueValidator(queryset=Product.objects.filter(deleted=False).all(),
+                        message=MESSAGES['DUPLICATES'].format('Product',
+                                                              'product title'))
+    ])
 
     class Meta:
         """Meta"""
@@ -23,6 +30,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'title',
             'price',
             'description',
+            'availability',
             'images',
             'vendor',
             'vendor_detail',
