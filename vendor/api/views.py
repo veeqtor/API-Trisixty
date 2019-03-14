@@ -10,7 +10,7 @@ from vendor.models import Vendor
 
 from utils.messages import MESSAGES
 from utils.permissions import (VerifiedBusinessAccountPermission,
-                               IsAuthenticated)
+                               IsAuthenticated, HasVendorRights)
 
 
 class VendorViewSet(viewsets.GenericViewSet,
@@ -24,7 +24,7 @@ class VendorViewSet(viewsets.GenericViewSet,
     queryset = Vendor.objects.all().filter(deleted=False)
     serializer_class = VendorSerializer
     permission_classes = (IsAuthenticated,
-                          VerifiedBusinessAccountPermission)
+                          VerifiedBusinessAccountPermission, HasVendorRights)
 
     def create(self, request, *args, **kwargs):
         """Create a new vendor"""

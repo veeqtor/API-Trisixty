@@ -49,7 +49,7 @@ class TestDeleteEndpoint:
                                                         create_user,
                                                         authenticate_user,
                                                         new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that deleting an already deleted vendor fails"""
 
         vendor = new_vendors
         vendor[0].deleted = True
@@ -66,7 +66,7 @@ class TestDeleteEndpoint:
     def test_restore_a_nonexistent_vendor_fails(self, client, create_user,
                                                 authenticate_user,
                                                 new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that restoring an invalid vendor fails"""
 
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
         response = client.get(self.vendor_url('invalid', 'restore'),
@@ -80,7 +80,7 @@ class TestDeleteEndpoint:
     def test_restoring_a_deleted_vendor_succeeds(self, client, create_user,
                                                  authenticate_user,
                                                  new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that restoring a deleted vendor succeeds"""
 
         vendor = new_vendors
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
@@ -96,7 +96,7 @@ class TestDeleteEndpoint:
     def test_soft_deleting_a_nonexistent_vendor_fails(self, client, create_user,
                                                       authenticate_user,
                                                       new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that soft deleting an invalid vendor fails"""
 
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
         response = client.delete(self.vendor_url('invalid', 'soft'),
@@ -110,7 +110,7 @@ class TestDeleteEndpoint:
     def test_hard_deleting_a_vendor_succeeds(self, client, create_user,
                                              authenticate_user,
                                              new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that hard deleting a vendor succeeds"""
 
         vendor = new_vendors
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
@@ -125,7 +125,7 @@ class TestDeleteEndpoint:
     def test_hard_deleting_a_nonexistent_vendor_fails(self, client, create_user,
                                                       authenticate_user,
                                                       new_vendors):
-        """Test that deleting a vendor succeeds"""
+        """Test that hard deleting an invalid vendor fails"""
 
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
         response = client.delete(self.vendor_url('invalid', 'hard'),

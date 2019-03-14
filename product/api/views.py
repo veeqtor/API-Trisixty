@@ -1,22 +1,23 @@
 """Module for the product views"""
 
-from rest_framework import viewsets, mixins
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status
 
-from product.models import Product
 from product.api.serializer import ProductSerializer
-
+from product.models import Product
+from utils.messages import MESSAGES
 from utils.permissions import (IsAuthenticated,
                                VerifiedBusinessAccountPermission)
-from utils.messages import MESSAGES
 
 
 class ProductViewSet(viewsets.GenericViewSet,
                      mixins.CreateModelMixin,
                      mixins.ListModelMixin,
                      mixins.UpdateModelMixin,
-                     mixins.RetrieveModelMixin):
+                     mixins.RetrieveModelMixin,
+                     mixins.DestroyModelMixin):
     """ViewSet for the products"""
 
     queryset = Product.objects.filter(deleted=False).all()
@@ -137,6 +138,81 @@ class ProductViewSet(viewsets.GenericViewSet,
 
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
+    def destroy(self, request, *args, **kwargs):
+        """Method to delete vendors"""
+
+        instance = self.get_object()
+
+        if instance:
+            self.perform_destroy(instance)
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['DELETED'].format('Product'),
+            }
+            return Response(response)
+
+        error = {
+            "status": "error",
+            "message": MESSAGES['NOT_FOUND']
+        }
+
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+    @action(methods=['get'], detail=True, url_path='restore')
+    def restore(self, request, *args, **kwargs):
+        """Restoring a deleted vendor"""
+
+        instance = self.get_object()
+
+        if instance and instance.deleted:
+            instance.deleted = False
+            instance.save()
+
+            serializer = self.get_serializer_class()
+            serialized_data = serializer(instance).data
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['RESTORE'].format('Product',
+                                                      serialized_data['title']),
+                "data": serialized_data
+            }
+            return Response(response)
+
+        error = {
+            "status": "error",
+            "message": MESSAGES['NOT_DELETED']
+        }
+
+        return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['delete'], detail=True, url_path='delete')
+    def hard_delete(self, request, *args, **kwargs):
+        """Restoring a deleted vendor"""
+
+        instance = self.get_object()
+        if instance:
+            self.perform_hard_delete(instance)
+
+            response = {
+                "status": 'success',
+                "message": MESSAGES['P_DELETED'].format('Product'),
+            }
+            return Response(response)
+
+        error = {
+            "status": "error",
+            "message": MESSAGES['NOT_FOUND']
+        }
+
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+    def perform_hard_delete(self, instance):
+        """Performs hard delete"""
+
+        instance.hard_delete()
+
     # Overriding the get get_permissions method  so as to use
     # a different serializer for the list and retrieve end point
     def get_permissions(self):
@@ -146,3 +222,21 @@ class ProductViewSet(viewsets.GenericViewSet,
             self.permission_classes = []
 
         return super(self.__class__, self).get_permissions()
+
+    def get_object(self):
+        """Gets the objects from the provided keys"""
+
+        if self.action in ('retrieve',):
+            return get_object_or_404(
+                    self.get_queryset().filter(pk=self.kwargs['pk']))
+
+        elif self.action in ('hard_delete', 'destroy') and \
+                not self.request.user.is_superuser:
+            return get_object_or_404(
+                    self.get_queryset().filter(pk=self.kwargs['pk'],
+                                               vendor__owner=self.request.user)
+            )
+
+        elif self.action in ('restore',) and self.request.user.is_superuser:
+            return get_object_or_404(
+                    Product.objects.filter(pk=self.kwargs['pk']).all())

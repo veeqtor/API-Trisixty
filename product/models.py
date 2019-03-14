@@ -12,8 +12,9 @@ from vendor.models import Vendor
 class Product(BaseAuditableModel):
     """Class representing the product model class"""
 
-    title = models.CharField(_('Product name'), max_length=255, unique=True)
+    title = models.CharField(_('Product name'), max_length=255)
     price = models.FloatField(_('Product price'))
+    availability = models.IntegerField(_('Availability'), default=0)
     images = fields.ArrayField(
             models.CharField(_('Image URI'),
                              default=['https://placehold.it/500X500'],
