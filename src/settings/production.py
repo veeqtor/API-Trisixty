@@ -1,7 +1,6 @@
 """Production settings"""
 
 from os import environ
-import django_heroku
 from .base import *
 
 ENV = ('production', 'prod', 'Heroku', 'HEROKU', 'PROD', 'PRODUCTION')
@@ -19,6 +18,8 @@ if HOST_ENV in ENV:
              "LOCATION": os.environ.get('REDIS_URL'),
         }
     }
+
+    import django_heroku
 
     # Activate Django-Heroku.
     django_heroku.settings(locals())
