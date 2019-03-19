@@ -1,7 +1,7 @@
 """Test settings"""
 
 from os import environ
-from .settings import *
+from .base import *
 
 # Database
 DATABASES = {
