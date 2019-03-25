@@ -16,7 +16,7 @@ class TestProductModel:
         assert product.title == NEW_PRODUCT['title']
         assert product.description == NEW_PRODUCT['description']
         assert product.images == NEW_PRODUCT['images']
-        assert product.vendor == NEW_PRODUCT['vendor']
+        assert product.vendor_id == NEW_PRODUCT['vendor_id']
 
     def test_the_model_string_succeeds(self, create_product):
         """Test that vendors model string rep is correct."""
