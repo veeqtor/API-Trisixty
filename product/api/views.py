@@ -5,7 +5,9 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from product.api.serializer import ProductSerializer
+from product.api.serializer import (ProductSerializer,
+                                    ProductWithVendorSerializer,
+                                    ProductWithOwnerSerializer)
 from product.models import Product
 from utils.messages import MESSAGES
 from utils.permissions import (IsAuthenticated,
@@ -240,3 +242,18 @@ class ProductViewSet(viewsets.GenericViewSet,
         elif self.action in ('restore',) and self.request.user.is_superuser:
             return get_object_or_404(
                     Product.objects.filter(pk=self.kwargs['pk']).all())
+
+    def get_serializer_class(self):
+        """sets serializer class for side-loading vendors and owner."""
+
+        include = self.request.query_params.get('include')
+
+        if include and 'vendor' in include:
+            self.serializer_class = ProductWithVendorSerializer
+
+        if include and 'owner' in include:
+            self.serializer_class = ProductWithOwnerSerializer
+
+        return self.serializer_class
+
+

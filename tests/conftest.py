@@ -47,7 +47,7 @@ def create_product(create_vendor):
 
     vendor, user = create_vendor
 
-    NEW_PRODUCT['vendor'] = vendor
+    NEW_PRODUCT['vendor_id'] = vendor.id
     return Product.objects.create(**NEW_PRODUCT), user
 
 
@@ -191,7 +191,7 @@ def new_products(new_vendors):
             "description": "New description",
             "images": ["https://place-hold.it/300x500/fff",
                        "https://place-hold.it/300x500/fff"],
-            "vendor": vendor[0]
+            "vendor_id": vendor[0].id
         }, {
 
             "title": "Trouser II",
@@ -199,7 +199,7 @@ def new_products(new_vendors):
             "description": "New description",
             "images": ["https://place-hold.it/300x500/fff",
                        "https://place-hold.it/300x500/fff"],
-            "vendor": vendor[1]
+            "vendor_id": vendor[1].id
         }, {
 
             "title": "Short III",
@@ -207,7 +207,7 @@ def new_products(new_vendors):
             "description": "New description",
             "images": ["https://place-hold.it/300x500/fff",
                        "https://place-hold.it/300x500/fff"],
-            "vendor": vendor[2]
+            "vendor_id": vendor[2].id
         }, {
 
             "title": "Gown IV",
@@ -215,7 +215,7 @@ def new_products(new_vendors):
             "description": "New description",
             "images": ["https://place-hold.it/300x500/fff",
                        "https://place-hold.it/300x500/fff"],
-            "vendor": vendor[3]
+            "vendor_id": vendor[3].id
         }, {
 
             "title": "Shirt V",
@@ -223,7 +223,7 @@ def new_products(new_vendors):
             "description": "New description",
             "images": ["https://place-hold.it/300x500/fff",
                        "https://place-hold.it/300x500/fff"],
-            "vendor": vendor[0]
+            "vendor_id": vendor[0].id
         }
     ]
 

@@ -50,13 +50,13 @@ class TestCreateProductEndpoint:
 
         assert response.status_code == 400
         assert resp['status'] == 'error'
-        assert resp['errors']['vendor'][0] == MESSAGES['REQUIRED_FIELD']
+        assert resp['errors']['vendor_id'][0] == MESSAGES['REQUIRED_FIELD']
 
     def test_create_product_for_another_vendor_fails(self, client, create_user,
                                                      authenticate_user,
                                                      create_vendor):
         vendor, _ = create_vendor
-        NEW_PRODUCT['vendor'] = vendor.id
+        NEW_PRODUCT['vendor_id'] = vendor.id
 
         user = create_user(NEW_USER)
         auth_header = self.authenticate_user(authenticate_user, NEW_USER)
@@ -73,7 +73,7 @@ class TestCreateProductEndpoint:
     def test_create_product_succeeds(self, client,
                                      authenticate_user, create_vendor):
         vendor, user = create_vendor
-        NEW_PRODUCT['vendor'] = vendor.id
+        NEW_PRODUCT['vendor_id'] = vendor.id
 
         auth_header = self.authenticate_user(authenticate_user, USER)
         user.is_verified = True
@@ -90,8 +90,9 @@ class TestCreateProductEndpoint:
     def test_create_already_exiting_product_fails(self, client, create_vendor,
                                                   authenticate_user,
                                                   create_product):
-        product, user = create_product
-        NEW_PRODUCT['vendor'] = product.vendor_id
+        vendor, user = create_vendor
+
+        NEW_PRODUCT['vendor_id'] = vendor.id
 
         auth_header = self.authenticate_user(authenticate_user, USER)
         user.is_verified = True
