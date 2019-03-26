@@ -13,6 +13,9 @@ The API documentation can be found here:
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ec2e3eb971309499cf94)
 
+Staging Link: https://trixbuy-api-staging.herokuapp.com
+
+Schema: https://trixbuy-api-staging.herokuapp.com/schema/
 
 ## Key Application features
 
