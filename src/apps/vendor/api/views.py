@@ -1,24 +1,19 @@
 """Module for the views"""
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
-
-from vendor.api.serializer import VendorSerializer, VendorDetailsSerializer
-from vendor.models import Vendor
+from src.apps.vendor.api.serializer import (VendorSerializer,
+                                            VendorDetailsSerializer)
+from src.apps.vendor.models import Vendor
 
 from utils.messages import MESSAGES
 from utils.permissions import (VerifiedBusinessAccountPermission,
                                IsAuthenticated, HasVendorRights)
 
 
-class VendorViewSet(viewsets.GenericViewSet,
-                    mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.DestroyModelMixin):
+class VendorViewSet(viewsets.ModelViewSet):
     """A viewSet for viewing and editing vendor instances."""
 
     queryset = Vendor.objects.all().filter(deleted=False)
@@ -82,7 +77,7 @@ class VendorViewSet(viewsets.GenericViewSet,
             return Response(response)
 
     def retrieve(self, request, *args, **kwargs):
-        """View method for retrieving a single vendor"""
+        """Retrieve a single vendor"""
 
         instance = self.get_object()
         serializer = self.get_serializer_class()
@@ -97,7 +92,7 @@ class VendorViewSet(viewsets.GenericViewSet,
         return Response(response)
 
     def partial_update(self, request, *args, **kwargs):
-        """View to update vendors"""
+        """Update a vendor"""
 
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data,
@@ -121,7 +116,7 @@ class VendorViewSet(viewsets.GenericViewSet,
         return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        """Method to delete vendors"""
+        """Soft delete a vendor"""
 
         instance = self.get_object()
         self.perform_destroy(instance)
@@ -162,7 +157,7 @@ class VendorViewSet(viewsets.GenericViewSet,
 
     @action(methods=['delete'], detail=True, url_path='delete')
     def hard_delete(self, request, pk=None):
-        """Restoring a deleted vendor"""
+        """Hard deleting a vendor"""
 
         instance = Vendor.objects.filter(pk=pk).first()
         if instance:

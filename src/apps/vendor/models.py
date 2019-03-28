@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from utils.base_models import BaseAuditableModel
-from user.models import User
+from src.apps.user.models import User
 
 
 class Vendor(BaseAuditableModel):

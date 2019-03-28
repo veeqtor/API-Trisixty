@@ -30,3 +30,10 @@ SUPERUSER = {
     'email': 'test_user@example.com',
     'password': 'password1234',
 }
+
+DUMMY_USER = {
+    'email': 'test_user@example.com',
+    'password': 'Password@1234',
+    'firstName': 'Test',
+    'lastName': 'User'
+}

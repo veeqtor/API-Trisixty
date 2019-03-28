@@ -1,7 +1,7 @@
 import pytest
 from django.urls import resolve, reverse
 from django.contrib.auth import get_user_model
-from tests.mocks.user_mock_data import USER, USER_INVALID
+from tests.mocks.user_mock_data import USER, USER_INVALID, DUMMY_USER
 from utils.messages import MESSAGES
 from utils.random_token import generate_verification_token
 
@@ -55,13 +55,14 @@ class TestUserEndpoints:
         })
         resp_data = response.data
         assert response.status_code == 400
-        assert resp_data['non_field_errors'][0] == MESSAGES['UNAUTHENTICATED']
+        assert resp_data['message'][0] == MESSAGES['UNAUTHENTICATED']
 
     def test_user_account_registration_succeeds(self, client):
         """Test that users can register"""
 
-        response = client.post(REGISTER_URL, data={**USER})
+        response = client.post(REGISTER_URL, data={**DUMMY_USER})
         resp_data = response.data
+
         assert response.status_code == 201
         assert resp_data['status'] == 'success'
         assert resp_data['data']['token'] is not None
@@ -111,18 +112,16 @@ class TestUserEndpoints:
         assert resp_data['status'] == 'error'
         assert resp_data['message'] == MESSAGES['NOT_FOUND_TOKEN']
 
-    def test_that_user_token_expired_succeeds(self, client):
+    def test_that_user_token_has_expired_fails(self, client):
         """Test that the user is already verified"""
 
         token = generate_verification_token(-5)
-        client.post(REGISTER_URL, data={
-            'email': 'test2@example.com',
-            'password': 'Password@1342'
-        })
+        client.post(REGISTER_URL, data={**DUMMY_USER})
         get_user_model().objects.all().filter(
-            email='test2@example.com').update(verification_token=token)
+            email=DUMMY_USER['email']).update(verification_token=token)
         response = client.get(VERIFY_URL + f'?token={token}')
         resp_data = response.data
+
         assert response.status_code == 400
         assert resp_data['status'] == 'error'
         assert resp_data['message'] == MESSAGES['EXPIRED_TOKEN']

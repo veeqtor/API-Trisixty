@@ -2,7 +2,7 @@
 
 from django.urls import path, include
 
-from product.api import views
+from src.apps.product.api import views
 from rest_framework.routers import DefaultRouter
 
 

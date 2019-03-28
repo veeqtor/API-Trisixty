@@ -13,7 +13,7 @@ class TestGetAVendorEndpoint:
         """to generate vendor url"""
         return reverse('vendor:vendor-detail', args=[vendor_id])
 
-    def test_get_a_vendor_succeeds(self, client, create_user, new_vendors):
+    def test_get_a_vendor_succeeds(self, client, new_vendors):
         """Test get a new vendor endpoint"""
 
         vendor = new_vendors
@@ -29,7 +29,7 @@ class TestGetAVendorEndpoint:
         assert data['location'] == vendor[0].location
         assert data['email'] == vendor[0].email
 
-    def test_get_a_vendor_fails(self, client, create_user, new_vendors):
+    def test_get_a_vendor_fails(self, client, new_vendors):
         """Test get a new vendor endpoint"""
 
         response = client.get(self.vendor_url('invalid'))
