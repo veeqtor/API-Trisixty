@@ -3,7 +3,7 @@
 import pytest
 from django.urls import reverse
 
-from product.models import Product
+from src.apps.product.models import Product
 from tests.mocks.user_mock_data import NEW_USER, USER
 from utils.messages import MESSAGES
 

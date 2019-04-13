@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import datetime
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,10 +30,16 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:4200',
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:4200',
+# )
+
+CORS_ALLOW_HEADERS = default_headers + (
+    'if-modified-since',
+    'if-none-match',
+    'cache-control'
 )
 
 # Application definition
@@ -43,11 +50,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third Party apps
     'rest_framework',
-    'user.apps.UserConfig',
-    'vendor.apps.VendorConfig',
-    'product.apps.ProductConfig',
-    'corsheaders'
+    'corsheaders',
+
+    # Apps
+    'src.apps.user.apps.UserConfig',
+    'src.apps.vendor.apps.VendorConfig',
+    'src.apps.product.apps.ProductConfig',
 ]
 
 MIDDLEWARE = [
@@ -193,7 +204,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5
+    'PAGE_SIZE': 10,
+
+    'NON_FIELD_ERRORS_KEY': 'message'
 }
 
 # JWT CONFIGS

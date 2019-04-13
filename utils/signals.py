@@ -1,6 +1,6 @@
 """Models for signals"""
 from utils.push_ID import PushID
-from tasks.user_emails import UserSend
+from src.tasks.user_emails import UserSend
 
 
 def generate_push_id(sender, instance, **kwargs):

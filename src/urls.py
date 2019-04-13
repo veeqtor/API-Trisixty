@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from user.views import home
+from src.apps.user.views import home
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 from django.conf import settings
@@ -22,7 +22,7 @@ urlpatterns = [
     path('docs/', include_docs_urls(title='TrixBuy API',
                                     description='An API enable user to '
                                     'register, buy and sell clothes.')),
-    path(f'{BASE_VERSION}user/', include('user.api.urls')),
-    path(f'{BASE_VERSION}', include('vendor.api.urls')),
-    path(f'{BASE_VERSION}', include('product.api.urls')),
+    path(f'{BASE_VERSION}user/', include('src.apps.user.api.urls')),
+    path(f'{BASE_VERSION}', include('src.apps.vendor.api.urls')),
+    path(f'{BASE_VERSION}', include('src.apps.product.api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

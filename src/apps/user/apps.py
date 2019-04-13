@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 class UserConfig(AppConfig):
     """Class representing the user application and its configuration."""
 
-    name = 'user'
+    name = 'src.apps.user'
 
     def ready(self):
         """Imports the signals and connect when Django starts"""

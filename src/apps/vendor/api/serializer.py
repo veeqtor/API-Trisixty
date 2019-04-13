@@ -2,14 +2,18 @@
 
 from rest_framework import serializers
 
-from vendor.models import Vendor
-from user.api.serializers import DetailedUserSerializer
+from src.apps.vendor.models import Vendor
+from src.apps.user.api.serializers import DetailedUserSerializer
 
 from utils.constants import READ_ONLY_FIELDS
 
 
 class VendorSerializer(serializers.ModelSerializer):
     """Class representing the vendor serializer"""
+
+    logoUrl = serializers.CharField(source='logo_url', required=False)
+    createdAt = serializers.CharField(source='created_at', read_only=True)
+    updatedAt = serializers.CharField(source='updated_at', read_only=True)
 
     class Meta:
         """Meta"""
@@ -21,11 +25,11 @@ class VendorSerializer(serializers.ModelSerializer):
             'location',
             'description',
             'owner',
-            'logo_url',
+            'logoUrl',
             'email',
             'phone',
-            'created_at',
-            'updated_at'
+            'createdAt',
+            'updatedAt'
         ]
         read_only_fields = READ_ONLY_FIELDS + ['owner']
         extra_kwargs = {

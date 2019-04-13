@@ -1,5 +1,5 @@
 from django.contrib import admin
-from vendor.models import Vendor
+from src.apps.vendor.models import Vendor
 
 
 @admin.register(Vendor)

@@ -8,7 +8,7 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework import status
 from rest_framework.response import Response
 from utils import random_token, messages
-from tasks.user_emails import UserSend
+from src.tasks.user_emails import UserSend
 
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER

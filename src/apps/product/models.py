@@ -6,7 +6,7 @@ from django.contrib.postgres import fields
 
 from utils.base_models import BaseAuditableModel
 from django.utils.translation import gettext_lazy as _
-from vendor.models import Vendor
+from src.apps.vendor.models import Vendor
 
 
 class Product(BaseAuditableModel):

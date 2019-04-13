@@ -12,13 +12,15 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 class UserSerializer(serializers.ModelSerializer):
     """Class representing the User serializer"""
 
+    firstName = serializers.CharField(source='first_name')
+    lastName = serializers.CharField(source='last_name')
+
     class Meta:
         """Meta class"""
 
         model = get_user_model()
-        fields = ['id', 'email', 'password', 'first_name',
-                  'last_name', 'account_type', 'is_staff',
-                  'is_superuser']
+        fields = ['id', 'email', 'password', 'firstName', 'lastName',
+                  'account_type', 'is_staff', 'is_superuser']
         read_only_fields = ['full_name', 'id', 'account_type',
                             'date_joined', 'is_staff', 'is_superuser']
         extra_kwargs = {

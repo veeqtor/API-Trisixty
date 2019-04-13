@@ -4,10 +4,10 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from vendor.models import Vendor
-from product.models import Product
+from src.apps.vendor.models import Vendor
+from src.apps.product.models import Product
 
-from tests.mocks.user_mock_data import USER, NEW_USER
+from tests.mocks.user_mock_data import USER, NEW_USER, DUMMY_USER
 from tests.mocks.vendor_mock_data import NEW_VENDOR
 from tests.mocks.product_mock_data import NEW_PRODUCT
 
@@ -88,7 +88,7 @@ def generate_token(client, create_user):
 def create_user_and_token(client):
     """Fixture to generate a user token."""
 
-    client.post(REGISTER_URL, data={**USER})
+    client.post(REGISTER_URL, data={**DUMMY_USER})
     user = get_user_model().objects.all().filter(
             email=USER['email']).first()
     return user

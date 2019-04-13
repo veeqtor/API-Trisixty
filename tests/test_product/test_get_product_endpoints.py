@@ -6,6 +6,7 @@ from django.urls import reverse
 from utils.messages import MESSAGES
 
 PRODUCT_LIST = reverse('product:product-list')
+NEW_ARRIVALS = reverse('product:product-new-arrivals')
 
 
 @pytest.mark.django_db
@@ -18,7 +19,7 @@ class TestGetProductEndpoint:
         return reverse('product:product-detail', args=[product_id])
 
     def test_get_all_products_succeeds(self, client, new_products):
-        """test to test the get all endpoint"""
+        """test the get all products endpoint"""
 
         products = new_products
 
@@ -36,7 +37,7 @@ class TestGetProductEndpoint:
 
     def test_get_all_products_with_invalid_page_fails(self, client,
                                                       new_products):
-        """test to test the get all endpoint"""
+        """test to the get all products endpoint"""
 
         response = client.get(PRODUCT_LIST + '?page=100')
         resp = response.data
@@ -74,3 +75,21 @@ class TestGetProductEndpoint:
         assert response.status_code == 404
         assert resp['status'] == 'error'
         assert resp['message'] == MESSAGES['NOT_FOUND']
+
+    def test_get_all_new_arrivals_succeeds(self, client, new_products):
+        """test to the get new arrivals endpoint"""
+
+        products = new_products
+
+        response = client.get(NEW_ARRIVALS)
+        resp = response.data
+        data = resp['data']
+
+        assert response.status_code == 200
+        assert resp['status'] == 'success'
+        assert resp['message'] == MESSAGES['FETCHED'].format('Products')
+        assert len(data) <= 8
+        assert data[0]['id'] == products[-1].id
+        assert data[0]['title'] == products[-1].title
+        assert data[0]['price'] == products[-1].price
+        assert data[0]['description'] == products[-1].description

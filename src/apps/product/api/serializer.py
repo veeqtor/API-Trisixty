@@ -3,10 +3,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from product.models import Product
+from src.apps.product.models import Product
 from utils.messages import MESSAGES
-from vendor.api.serializer import VendorSerializer, VendorDetailsSerializer
-from vendor.models import Vendor
+from src.apps.vendor.api.serializer import (VendorSerializer,
+                                            VendorDetailsSerializer)
+from src.apps.vendor.models import Vendor
 
 
 from utils.constants import READ_ONLY_FIELDS
