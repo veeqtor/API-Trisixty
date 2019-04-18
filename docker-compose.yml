@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  rest_api:
+    restart: always
+#    image: veeqtor/rest_api:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_NAME=api_trixbuy
+      - DB_PASS=api_trixbuy
+      - DB_HOST=database
+      - DB_USER=docker-user
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+
+    volumes:
+      - .:/api-trixbuy
+
+    ports:
+      - "9000:9000"
+
+    depends_on:
+      - redis
+      - database
+
+    stdin_open: true
+    tty: true
+
+  redis:
+    restart: always
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+
+  database:
+    restart: always
+    image: postgres:10.5-alpine
+    environment:
+      - POSTGRES_USER=docker-user
+      - POSTGRES_PASSWORD=api_trixbuy
+      - POSTGRES_DB=api_trixbuy
+    volumes:
+      - tmp-docker_db:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+
+volumes:
+  tmp-docker_db:

@@ -15,6 +15,7 @@ media
 .coverage
 .env
 redis-stable/
+tmp-docker_db/
 
 src/static/
 staticfiles/

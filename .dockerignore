@@ -1,0 +1,8 @@
+.idea
+htmlcov
+.coverage*
+**/*/__pycache__
+redis-stable
+.pytest_cache
+.vscode
+staticfiles

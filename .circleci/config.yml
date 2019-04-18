@@ -16,7 +16,7 @@ default: &defaults
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
     # documented at https://circleci.com/docs/2.0/circleci-images/
-    - image: postgres:10
+    - image: circleci/postgres:9.6.2
       environment:
         POSTGRES_USER: root
         POSTGRES_DB: trisixty_test
@@ -33,15 +33,9 @@ cmd_install_dependencies: &cmd_install_dependencies
   run:
     name: Install dependencies
     command: |
-      curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
-      export PATH="/home/circleci/.pyenv/bin:$PATH"
-      eval "$(pyenv init -)"
-      eval "$(pyenv virtualenv-init -)"
-      pyenv install 3.6.5 -s
-      pyenv local 3.6.5
-      pip3 install --user pipenv==2018.11.26
-      python3 -m pip install pipenv==2018.11.26
-      python3 -m pipenv install
+      sudo pip install pipenv
+      pipenv sync --dev
+
 
 wait_for_postgres: &cmd_wait_for_postgres
   run:
@@ -61,7 +55,8 @@ save_cache: &cmd_save_cache
   save_cache:
     key: api-dependencies-{{ checksum "Pipfile.lock" }}
     paths:
-      - $(python3 -m pipenv --venv)
+      - "/usr/local/bin"
+      - "/usr/local/lib/python3.6/site-packages"
 
 restore_cache: &cmd_restore_cache
   restore_cache:
@@ -71,7 +66,6 @@ restore_cache: &cmd_restore_cache
       - api-dependencies-
 
 # Python CircleCI 2.0 configuration file
-#
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2
@@ -81,16 +75,17 @@ jobs:
     steps:
       - checkout
       - *cmd_attach_workspace
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - *cmd_restore_cache
       - *cmd_install_dependencies
       - *cmd_save_cache
       - *cmd_wait_for_postgres
-      - *cmd_restore_cache
       - *cmd_download_cc_test_reporter
       - run:
           name: run tests
           command: |
-            source $(python3 -m pipenv --venv)/bin/activate
-            pytest
+            pipenv run pytest
             /tmp/cc-test-reporter format-coverage coverage.xml -t "coverage.py" -o "tmp/cc.testreport.json"
       - persist_to_workspace:
           root: tmp
@@ -111,6 +106,35 @@ jobs:
           path: test-reports
           destination: test-reports
 
+  deploy_heroku:
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker
+      - *cmd_attach_workspace
+      - run:
+          name: Deploy to heroku
+          command: |
+
+            env >> .env
+
+            # install heroku CLI
+            curl https://cli-assets.heroku.com/install.sh | sh
+
+            # login to heroku docker registry
+            heroku container:login
+
+            # Login to heroku registry
+            docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+
+
+            #  Build docker image for the docker container
+            #  Tag and Push image to heroku container registory
+            docker build -t registry.heroku.com/$APP_NAME/web -f docker-heroku/Dockerfile .
+            docker push registry.heroku.com/$APP_NAME/web
+
+            # release application
+            heroku container:release web --app $APP_NAME
 workflows:
   version: 2
   build:
@@ -119,3 +143,16 @@ workflows:
       - upload_coverage:
           requires:
             - run_tests
+      - deploy_heroku:
+          requires:
+            - run_tests
+            - upload_coverage
+          filters:
+            branches:
+              only:
+                - develop
+            tags:
+              only:
+                - /v[0-9]+(\.[0-9]+)*/
+
+
